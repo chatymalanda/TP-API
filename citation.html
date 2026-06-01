@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Citations Inspirantes ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400;1,600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --creme:   #FAF3E0;
+      --beige:   #EFE5CC;
+      --brun:    #4A3728;
+      --or:      #C4943A;
+      --texte:   #2D1F13;
+      --ombre:   0 12px 48px rgba(74,55,40,.18);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: var(--creme);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--texte);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    /* Texture papier subtile */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Ccircle cx='1' cy='1' r='.7' fill='rgba(74,55,40,.06)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      max-width: 700px; width: 100%;
+    }
+
+    /* En-tête */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .label-haut {
+      font-size: .72rem;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--or);
+      font-weight: 700;
+      margin-bottom: .75rem;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--brun);
+      line-height: 1.1;
+    }
+
+    /* Carte principale */
+    .carte-citation {
+      background: #fff;
+      border-radius: 4px;
+      padding: 3.5rem 3rem;
+      box-shadow: var(--ombre);
+      position: relative;
+      border-left: 5px solid var(--or);
+      margin-bottom: 2rem;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    /* Grand guillemet décoratif */
+    .carte-citation::before {
+      content: '"';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 9rem;
+      color: var(--beige);
+      position: absolute;
+      top: -1.5rem;
+      left: 1.5rem;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Texte de la citation */
+    #citation-texte {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      font-style: italic;
+      line-height: 1.55;
+      color: var(--texte);
+      position: relative; z-index: 1;
+    }
+
+    /* Auteur */
+    #citation-auteur {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--or);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      position: relative; z-index: 1;
+    }
+
+    /* Séparateur avant l'auteur */
+    #citation-auteur::before {
+      content: '— ';
+    }
+
+    /* Tag (catégorie) */
+    #citation-tag {
+      display: inline-block;
+      background: var(--beige);
+      color: var(--brun);
+      border-radius: 4px;
+      padding: .25rem .75rem;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+
+    /* Boutons */
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 4px;
+      padding: .85rem 2rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      letter-spacing: .02em;
+    }
+
+    .btn-primaire {
+      background: var(--brun);
+      color: var(--creme);
+      box-shadow: 0 4px 16px rgba(74,55,40,.3);
+    }
+
+    .btn-primaire:hover {
+      background: var(--or);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(196,148,58,.4);
+    }
+
+    .btn-secondaire {
+      background: transparent;
+      color: var(--brun);
+      border: 2px solid var(--beige);
+    }
+
+    .btn-secondaire:hover {
+      border-color: var(--brun);
+      transform: translateY(-2px);
+    }
+
+    /* Statut */
+    #statut {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: .82rem;
+      color: var(--brun);
+      opacity: .45;
+      font-style: italic;
+      min-height: 1.2em;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(74,55,40,.2);
+      border-top-color: var(--or);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: .35rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes fonduEntree {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .apparition { animation: fonduEntree .5s ease forwards; }
+
+    /* Compteur de citations vues */
+    .compteur {
+      text-align: center;
+      font-size: .78rem;
+      letter-spacing: .12em;
+      color: var(--or);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <p class="label-haut">✦ Sagesse du monde ✦</p>
+    <h1>Citations<br>Inspirantes</h1>
+  </header>
+
+  <p class="compteur" id="compteur">Citation #0</p>
+
+  <div class="carte-citation">
+    <p id="citation-texte">Appuie sur le bouton pour découvrir une citation qui illuminera ta journée…</p>
+    <span id="citation-tag" style="display:none"></span>
+    <p id="citation-auteur" style="display:none"></p>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primaire" onclick="obtenirCitation()">✨ Nouvelle citation</button>
+    <button class="btn btn-secondaire" onclick="copierCitation()">📋 Copier</button>
+  </div>
+
+  <p id="statut"></p>
+</div>
+
+<script>
+ 
+
+async function obtenirBlague() {
+  elStatut.innerHTML = '<span class="spinner"></span> Recherche en cours…';
+  elpunchline.style.display = 'none';
+  elBtnpunchline.style.display = 'none';
+  elBadge.style.display = 'none';
+  try{
+  //etape A : appeler l'API joker
+  const url = "https://v2.jokeapi.dev/joke/Any?lang=fr";
+  // appel de l'API avec fetch et attente de la réponse
+   const reponse = await fetch(url);
+  // etape c : verification du statut http de la réponse
+   const donnees = await reponse.json();
+   // Affichage de la blague selon son type
+   elBadge.textContent = donnees.category;
+   elBadge.style.display = 'inline-block';
+   if (donnees.type === "twopart") {
+      //Blague en deux parties : SETUP + PUNCHLINE
+    elsetup.textContent = donnees.setup;
+    elBadge.classList.add('apparition');
+    elBtnpunchline.style.display = 'inline-block';
+   } else {
+    elsetup.textContent = donnees.joke;
+    elsetup.classList.add('apparition');
+   }
+  }
+  catch(error){
+    elsetup.textContent = '⚠️ Oups, une erreur est survenue.';
+    elsetup.textContent ='verifiez votre connexion et réessayez.';
+    
+  }
+  finally{
+    elStatut.innerHTML = '';
+  }
+
+  const elTexte    = document.getElementById('citation-texte');
+  const elAuteur   = document.getElementById('citation-auteur');
+  const elTag      = document.getElementById('citation-tag');
+  const elStatut   = document.getElementById('statut');
+  const elCompteur = document.getElementById('compteur');
+ }
+  let nbCitations = 0;  // compteur local
+
+  // ─── Fonction principale ───────────────────────────────────────
+  async function obtenirCitation() {
+
+    // 1. Afficher l'état de chargement
+    elStatut.innerHTML = '<span class="spinner"></span> Recherche en cours…';
+    elTexte.style.opacity = '.4';
+
+    /*
+    ════════════════════════════════════════════════════════════════
+    ✏️  EXERCICE — À COMPLÉTER PAR LES ÉTUDIANTS
+    ════════════════════════════════════════════════════════════════
+
+    ÉTAPE A — Définissez l'URL de l'API :
+    ┌────────────────────────────────────────────────────────────┐
+    │  const url = '???';                                        │
+    │  // https://api.quotable.io/random                         │
+    └────────────────────────────────────────────────────────────┘
+
+    ÉTAPE B — Faites l'appel fetch et attendez la réponse :
+    ┌────────────────────────────────────────────────────────────┐
+    │  const reponse = await fetch(???);                         │
+    └────────────────────────────────────────────────────────────┘
+
+    ÉTAPE C — Vérifiez si la requête a réussi :
+    ┌────────────────────────────────────────────────────────────┐
+    │  if (!reponse.ok) throw new Error('Erreur : '+reponse.status);│
+    └────────────────────────────────────────────────────────────┘
+
+    ÉTAPE D — Parsez la réponse JSON :
+    ┌────────────────────────────────────────────────────────────┐
+    │  const donnees = await reponse.???();                      │
+    └────────────────────────────────────────────────────────────┘
+
+    ÉTAPE E — Affichez les données :
+    ┌────────────────────────────────────────────────────────────┐
+    │  elTexte.textContent  = donnees.???;  // le texte          │
+    │  elAuteur.textContent = donnees.???;  // l'auteur          │
+    │  elAuteur.style.display = 'block';                         │
+    │                                                            │
+    │  // Pour le tag, prenez le 1er élément du tableau tags :   │
+    │  if (donnees.tags.length > 0) {                            │
+    │    elTag.textContent    = donnees.tags[???];               │
+    │    elTag.style.display  = 'inline-block';                  │
+    │  }                                                         │
+    │                                                            │
+    │  // Incrémentez nbCitations et mettez à jour le compteur  │
+    │  nbCitations++;                                            │
+    │  elCompteur.textContent = 'Citation #' + ???;              │
+    └────────────────────────────────────────────────────────────┘
+
+    Enveloppez les étapes B→E dans try { } catch(err) { }
+    ════════════════════════════════════════════════════════════════
+    */
+
+    elTexte.style.opacity = '1';
+    elStatut.textContent = '';
+  }
+
+  // ─── Copier la citation dans le presse-papiers ─────────────────
+  async function copierCitation() {
+    const texte = `"${elTexte.textContent}" — ${elAuteur.textContent.replace('— ', '')}`;
+    try {
+      await navigator.clipboard.writeText(texte);
+      elStatut.textContent = '✅ Citation copiée dans le presse-papiers !';
+      setTimeout(() => elStatut.textContent = '', 2000);
+    } catch {
+      elStatut.textContent = '⚠️ Impossible de copier.';
+    }
+  }
+</script>
+</body>
+</html>

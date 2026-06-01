@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Générateur de Blagues 🎭</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── Palette & variables ── */
+    :root {
+      --jaune:  #FFD93D;
+      --orange: #FF6B35;
+      --violet: #1A1A2E;
+      --carte:  #16213E;
+      --texte:  #E0E0E0;
+      --ombre:  0 8px 32px rgba(0,0,0,.45);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: var(--violet);
+      font-family: 'Nunito', sans-serif;
+      color: var(--texte);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    /* Fond animé avec des bulles */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(255,107,53,.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(255,217,61,.10) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      max-width: 640px; width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Bangers', cursive;
+      font-size: clamp(3rem, 8vw, 5rem);
+      letter-spacing: .06em;
+      color: var(--jaune);
+      text-shadow: 4px 4px 0 var(--orange);
+      margin-bottom: .25rem;
+    }
+
+    .sous-titre {
+      font-size: .95rem;
+      opacity: .6;
+      margin-bottom: 2.5rem;
+      letter-spacing: .05em;
+    }
+
+    /* Carte qui affiche la blague */
+    .carte-blague {
+      background: var(--carte);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      box-shadow: var(--ombre);
+      border: 2px solid rgba(255,217,61,.15);
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      transition: transform .3s;
+    }
+
+    .carte-blague:hover { transform: translateY(-4px); }
+
+    /* Zone où on affichera la partie SETUP (début de la blague) */
+    #blague-setup {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--jaune);
+      line-height: 1.5;
+    }
+
+    /* Zone où on affichera la PUNCH LINE */
+    #blague-punchline {
+      font-size: 1rem;
+      color: var(--texte);
+      opacity: .85;
+      font-style: italic;
+      line-height: 1.6;
+      display: none; /* cachée au départ, on la révèle après le clic */
+    }
+
+    /* Bouton pour révéler la punchline */
+    #btn-punchline {
+      background: transparent;
+      border: 2px dashed rgba(255,217,61,.4);
+      color: rgba(255,217,61,.6);
+      border-radius: 50px;
+      padding: .5rem 1.5rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: all .25s;
+      display: none; /* caché au départ */
+    }
+
+    #btn-punchline:hover {
+      border-color: var(--jaune);
+      color: var(--jaune);
+      background: rgba(255,217,61,.08);
+    }
+
+    /* Bouton principal */
+    .btn-principal {
+      background: linear-gradient(135deg, var(--orange), #E63946);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 1rem 2.5rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(255,107,53,.45);
+      transition: transform .2s, box-shadow .2s;
+      letter-spacing: .03em;
+    }
+
+    .btn-principal:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 28px rgba(255,107,53,.6);
+    }
+
+    .btn-principal:active { transform: scale(.97); }
+
+    /* Message d'état (loading, erreur…) */
+    #statut {
+      margin-top: 1.2rem;
+      font-size: .85rem;
+      opacity: .5;
+      min-height: 1.2em;
+      font-style: italic;
+    }
+
+    /* Spinner de chargement */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 3px solid rgba(255,255,255,.2);
+      border-top-color: var(--jaune);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: .4rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Animation d'apparition de la blague */
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .apparition { animation: fadeSlideIn .4s ease forwards; }
+
+    /* Badge catégorie */
+    .badge {
+      display: inline-block;
+      background: rgba(255,107,53,.2);
+      color: var(--orange);
+      border-radius: 50px;
+      padding: .2rem .8rem;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .5rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>😂 BLAGUES</h1>
+  <p class="sous-titre">Propulsé par l'API JokeAPI · En anglais</p>
+
+  <div class="carte-blague">
+    <span id="badge-categorie" class="badge" style="display:none"></span>
+    <p id="blague-setup">Clique sur le bouton pour recevoir une blague !</p>
+    <p id="blague-punchline"></p>
+    <button id="btn-punchline">Voir la punchline 👀</button>
+  </div>
+
+  <button class="btn-principal" id="btn-blague" onclick="obtenirBlague()">
+    🎲 Nouvelle blague
+  </button>
+
+  <p id="statut"></p>
+</div>
+
+<script>
+  /*
+  ╔══════════════════════════════════════════════════════════════╗
+  ║            ATELIER FETCH — GÉNÉRATEUR DE BLAGUES             ║
+  ║                   Version EXERCICE                           ║
+  ╚══════════════════════════════════════════════════════════════╝
+
+  API utilisée : https://v2.jokeapi.dev/joke/Any
+  Documentation : https://v2.jokeapi.dev/
+
+  La réponse JSON a deux formats possibles :
+  ┌─ Format "twopart" (blague en deux parties) ──────────────────┐
+  │  {                                                            │
+  │    "type": "twopart",                                        │
+  │    "category": "Programming",                                │
+  │    "setup": "Why do programmers prefer dark mode?",          │
+  │    "delivery": "Because light attracts bugs!"                │
+  │  }                                                           │
+  └──────────────────────────────────────────────────────────────┘
+  ┌─ Format "single" (blague en une seule ligne) ─────────────────┐
+  │  {                                                            │
+  │    "type": "single",                                         │
+  │    "category": "Misc",                                       │
+  │    "joke": "I told a joke about UDP... you might not get it."│
+  │  }                                                           │
+  └──────────────────────────────────────────────────────────────┘
+  */
+
+  // Sélection des éléments du DOM qu'on va manipuler
+  const elSetup      = document.getElementById('blague-setup');
+  const elPunchline  = document.getElementById('blague-punchline');
+  const elBtnPunch   = document.getElementById('btn-punchline');
+  const elStatut     = document.getElementById('statut');
+  const elBadge      = document.getElementById('badge-categorie');
+  const elBtn        = document.getElementById('btn-blague');
+
+  // ─── Fonction principale ───────────────────────────────────────
+  async function obtenirBlague() {
+
+    // 1. PRÉPARER L'INTERFACE : afficher un état de chargement
+    elBtn.disabled = true;
+    elStatut.innerHTML = '<span class="spinner"></span> Chargement…';
+    elPunchline.style.display = 'none';
+    elBtnPunch.style.display  = 'none';
+    elBadge.style.display     = 'none';
+
+    /*
+    ════════════════════════════════════════════════════════════════
+    ✏️  EXERCICE — À COMPLÉTER PAR LES ÉTUDIANTS
+    ════════════════════════════════════════════════════════════════
+
+    ÉTAPE A — Déclarez l'URL de l'API :
+    ┌────────────────────────────────────────────────────────────┐
+    │  const url = '???';                                        │
+    │  // URL : https://v2.jokeapi.dev/joke/Any                  │
+    └────────────────────────────────────────────────────────────┘
+
+    ÉTAPE B — Appelez fetch() et attendez la réponse :
+    ┌────────────────────────────────────────────────────────────┐
+    │  const reponse = await ???(url);                           │
+    │  // fetch() renvoie une Promise → on utilise "await"       │
+    └────────────────────────────────────────────────────────────┘
+
+    ÉTAPE C — Convertissez la réponse en JSON :
+    ┌────────────────────────────────────────────────────────────┐
+    │  const donnees = await reponse.???();                      │
+    │  // La méthode .json() lit le corps de la réponse HTTP     │
+    └────────────────────────────────────────────────────────────┘
+
+    ÉTAPE D — Affichez les données selon le type de blague :
+    ┌────────────────────────────────────────────────────────────┐
+    │  if (donnees.type === 'twopart') {                         │
+    │    // Afficher donnees.setup dans elSetup.textContent      │
+    │    // Afficher donnees.delivery dans elPunchline.textContent│
+    │    // Montrer le bouton btn-punchline                       │
+    │  } else {                                                  │
+    │    // Afficher donnees.joke dans elSetup.textContent       │
+    │  }                                                         │
+    └────────────────────────────────────────────────────────────┘
+
+    N'oubliez pas d'entourer tout ça dans un try { } catch(err) { }
+    pour gérer les erreurs réseau !
+    ════════════════════════════════════════════════════════════════
+    */
+
+    // Réinitialisation du bouton à la fin (à garder dans le finally)
+    // finally { ... }
+    elBtn.disabled = false;
+    elStatut.textContent = '';
+  }
+
+  // ─── Révéler la punchline au clic ─────────────────────────────
+  elBtnPunch.addEventListener('click', () => {
+    elPunchline.style.display = 'block';
+    elPunchline.classList.add('apparition');
+    elBtnPunch.style.display = 'none';
+  });
+</script>
+</body>
+</html>
